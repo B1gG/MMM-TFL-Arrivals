@@ -10,7 +10,7 @@ This module gets real time arrival predictions for specific stops using the TfL 
 ## Installation
 
 ```bash
-git clone https://github.com/ryck/MMM-TFL-Arrivals.git
+git https://github.com/B1gG/MMM-TFL-Arrivals.git
 cd MMM-TFL-Arrivals
 npm install
 ```
