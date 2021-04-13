@@ -18,7 +18,7 @@ Module.register("MMM-TFL-Arrivals", {
 		color: true,
 		debug: false
 	},
-	start: function() {
+	start: function () {
 		Log.log("Starting module: " + this.name);
 		if (this.data.classes === "MMM-TFL-Arrivals") {
 			this.data.classes = "bright medium";
@@ -31,44 +31,32 @@ Module.register("MMM-TFL-Arrivals", {
 		this.scheduleUpdate(this.config.initialLoadDelay);
 		this.updateTimer = null;
 		this.url = encodeURI(this.apiBase + this.config.naptanId + "/arrivals" + this.getParams());
-		if(this.config.debug) {
+		if (this.config.debug) {
 			Log.info(this.url);
 		}
 		this.updateBusInfo(this);
 	},
 	// updateBusInfo
-	updateBusInfo: function(self) {
-		self.sendSocketNotification("GET_BUSARRIVALS", {"url":self.url});
+	updateBusInfo: function (self) {
+		self.sendSocketNotification("GET_BUSARRIVALS", { "url": self.url });
 	},
-	getStyles: function() {
+	getStyles: function () {
 		return ["MMM-TFL-Arrivals.css", "font-awesome.css"];
 	},
 	// Define required scripts.
-	getScripts: function() {
+	getScripts: function () {
 		return ["moment.js"];
 	},
 	//Define header for module.
-	getHeader: function() {
+	getHeader: function () {
 		return this.config.header;
 	},
 	// Override dom generator.
-	getDom: function() {
+	getDom: function () {
 		var wrapper = document.createElement("div");
 
 		if (this.config.naptanId === "") {
 			wrapper.innerHTML = "Please set the station naptan code: " + this.atcocode + ".";
-			wrapper.className = "dimmed light small";
-			return wrapper;
-		}
-
-		if (this.config.app_id === "") {
-			wrapper.innerHTML = "Please set the application ID: " + this.app_id + ".";
-			wrapper.className = "dimmed light small";
-			return wrapper;
-		}
-
-		if (this.config.app_key === "") {
-			wrapper.innerHTML = "Please set the application key: " + this.app_key + ".";
 			wrapper.className = "dimmed light small";
 			return wrapper;
 		}
@@ -84,7 +72,7 @@ Module.register("MMM-TFL-Arrivals", {
 		}
 
 		//Dump bus data
-		if(this.config.debug) {
+		if (this.config.debug) {
 			Log.info(this.buses);
 		}
 
@@ -93,7 +81,7 @@ Module.register("MMM-TFL-Arrivals", {
 		bustable.className = "small";
 
 		//If we have departure info
-		if(this.buses.data !== null) {
+		if (this.buses.data !== null) {
 
 			//Figure out how long the results are
 			var counter = this.buses.data.length;
@@ -114,14 +102,14 @@ Module.register("MMM-TFL-Arrivals", {
 				routeCell.className = "route";
 				var icon = ""
 				switch (bus.modeName) {
-				case "bus":
-					routeCell.className += " bus";
-					icon = "<i class=\"fas fa-bus\"></i>"
-					break;
-				case "tube":
-					routeCell.className += " tube";
-					icon = "<i class=\"fas fa-subway\"></i>"
-					break;
+					case "bus":
+						routeCell.className += " bus";
+						icon = "<i class=\"fas fa-bus\"></i>"
+						break;
+					case "tube":
+						routeCell.className += " tube";
+						icon = "<i class=\"fas fa-subway\"></i>"
+						break;
 				}
 				routeCell.innerHTML = icon + bus.routeName + " ";
 				row.appendChild(routeCell);
@@ -193,16 +181,16 @@ Module.register("MMM-TFL-Arrivals", {
 	/* processBuses(data)
 	* Uses the received data to set the various values into a new array.
 	*/
-	processBuses: function(data) {
+	processBuses: function (data) {
 		//Check we have data back from API
 		if (typeof data !== "undefined" && data !== null && data.length !== 0) {
-			if(this.config.debug) {
+			if (this.config.debug) {
 				Log.info(data);
 			}
 			//Define object to hold bus data
 			this.buses = {};
 			//Define array of departure info
-	    	this.buses.data = [];
+			this.buses.data = [];
 			//Define timestamp of current data
 			this.buses.timestamp = moment().format("LLL");
 			//Define message holder
@@ -214,7 +202,7 @@ Module.register("MMM-TFL-Arrivals", {
 			for (var i = 0; i < counter; i++) {
 				var bus = data[i];
 
-				if(this.config.debug) {
+				if (this.config.debug) {
 					Log.info(bus.stationName + ", " + bus.lineName + ", " + bus.towards + ", " + bus.expectedArrival + ", " + bus.timeToStation + ", " + bus.modeName);
 				}
 				this.buses.data.push({
@@ -227,31 +215,34 @@ Module.register("MMM-TFL-Arrivals", {
 				});
 			}
 
-			this.buses.data.sort(function(a,b){
-			    return a.timeToStation - b.timeToStation;
-			    }
+			this.buses.data.sort(function (a, b) {
+				return a.timeToStation - b.timeToStation;
+			}
 			);
 		} else {
 			//No data returned - set error message
 			this.buses.message = "No data returned";
 			this.buses.data = null;
 			this.buses.timestamp = moment().format("LLL");
-			if(this.config.debug) {
+			if (this.config.debug) {
 				Log.error("No data returned");
 				Log.error(this.buses);
 			}
 		}
 
-	    this.loaded = true;
+		this.loaded = true;
 
 		this.updateDom(this.config.animationSpeed);
 	},
-	getParams: function() {
-		var params = "?";
-		params += "app_id=" + this.config.app_id;
-		params += "&app_key=" + this.config.app_key;
-		if(this.config.debug) {
-			Log.info(params);
+	getParams: function () {
+		var params = "";
+		if (this.config.app_id == "") {
+			params += "?"
+			params += "app_id=" + this.config.app_id;
+			params += "&app_key=" + this.config.app_key;
+			if (this.config.debug) {
+				Log.info(params);
+			}
 		}
 		return params;
 	},
@@ -259,7 +250,7 @@ Module.register("MMM-TFL-Arrivals", {
 	 * Schedule next update.
 	 * argument delay number - Milliseconds before next update. If empty, this.config.updateInterval is used.
 	 */
-	scheduleUpdate: function(delay) {
+	scheduleUpdate: function (delay) {
 		var nextLoad = this.config.updateInterval;
 		if (typeof delay !== "undefined" && delay >= 0) {
 			nextLoad = delay;
@@ -267,15 +258,15 @@ Module.register("MMM-TFL-Arrivals", {
 
 		var self = this;
 		clearTimeout(this.updateTimer);
-		this.updateTimer = setTimeout(function() {
+		this.updateTimer = setTimeout(function () {
 			self.updateBusInfo(self);
 		}, nextLoad);
 	},
 	// Process data returned
-	socketNotificationReceived: function(notification, payload) {
-	  if (notification === "BUS_DATA" && payload.url === this.url) {
+	socketNotificationReceived: function (notification, payload) {
+		if (notification === "BUS_DATA" && payload.url === this.url) {
 			this.processBuses(payload.data);
 			this.scheduleUpdate(this.config.updateInterval);
-	  }
+		}
 	}
 });
