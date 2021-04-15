@@ -104,11 +104,15 @@ Module.register("MMM-TFL-Arrivals", {
 				switch (bus.modeName) {
 					case "bus":
 						routeCell.className += " bus";
-						icon = "<i class=\"fas fa-bus\"></i>"
+						icon = "<i class=\"fas fa-bus-alt\"></i>"
 						break;
 					case "tube":
 						routeCell.className += " tube";
 						icon = "<i class=\"fas fa-subway\"></i>"
+						break;
+					case "train":
+						routeCell.className += " tube";
+						icon = "<i class=\"fas fa-train\"></i>"
 						break;
 				}
 				routeCell.innerHTML = icon + bus.routeName + " ";
